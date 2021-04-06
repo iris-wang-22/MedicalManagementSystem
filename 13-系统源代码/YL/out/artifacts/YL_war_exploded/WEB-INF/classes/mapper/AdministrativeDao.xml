@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.AdministrativeDao">
+    <resultMap id="administrativeResultMap" type="Administrative">
+        <id property="adId" column="ad_id"/>
+        <result property="adName" column="ad_name"/>
+        <result property="adLocal" column="ad_local"/>
+    </resultMap>
+
+    <select id="queryByAdId" resultType="Administrative" resultMap="administrativeResultMap">
+        SELECT *
+        FROM administrative
+        WHERE ad_id=#{adId}
+    </select>
+
+    <select id="queryByAdName" resultType="Administrative" resultMap="administrativeResultMap">
+        SELECT *
+        FROM administrative
+        WHERE ad_name LIKE '%科'
+    </select>
+
+    <select id="queryAll" resultType="Administrative" resultMap="administrativeResultMap">
+        SELECT *
+        FROM administrative
+        ORDER BY ad_id DESC
+        limit #{offset},#{limit}
+    </select>
+
+    <insert id="insert" parameterType="Administrative">
+        INSERT INTO administrative
+        (ad_id,ad_name,ad_local)
+        VALUE
+        (#{adId},#{adName},#{adLocal})
+
+    </insert>
+
+    <update id="update" parameterType="Administrative">
+        UPDATE administrative
+        SET ad_id=#{adId},ad_name=#{adName},ad_local=#{adLocal}
+        WHERE ad_id=#{adId}
+    </update>
+
+    <delete id="delete" parameterType="Administrative">
+        DELETE FROM administrative
+        WHERE ad_id=#{adId}
+    </delete>
+
+</mapper>

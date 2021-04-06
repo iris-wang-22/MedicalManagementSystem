@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.OperationDao">
+    <resultMap id="operationResultMap" type="Operation">
+        <result property="opId" column="op_id" />
+        <result property="mrId" column="mr_id" />
+        <result property="opType" column="op_type" />
+        <result property="opTime" column="op_time" />
+        <result property="opPlace" column="op_place" />
+        <result property="opStatue" column="op_statue" />
+        <association property="medicalRecord" javaType="MedicalRecord"
+                     resultMap="com.tosit.yl.dao.MedicalRecordDao.medicalRecordResultMap"/>
+    </resultMap>
+
+    <select id="queryByMrId" parameterType="int" resultType="Operation" resultMap="operationResultMap">
+        SELECT *
+        FROM  (medical_record JOIN operation ON medical_record.mr_id = operation.mr_Id)
+        WHERE mr_id=#{mrId}
+
+    </select>
+
+    <select id="queryById" parameterType="int" resultType="Operation" resultMap="operationResultMap">
+        SELECT *
+        FROM (medical_record JOIN operation ON medical_record.mr_id = operation.mr_Id)
+        WHERE op_id=#{opId}
+
+    </select>
+    <select id="queryAll" resultType="Operation" resultMap="operationResultMap">
+        SELECT *
+        FROM (medical_record JOIN operation ON medical_record.mr_id = operation.mr_Id)
+        ORDER BY op_time DESC
+        limit #{offset},#{limit}
+    </select>
+    <insert id="insert" parameterType="Operation" >
+        INSERT INTO operation
+          (mr_id,op_type,op_time,op_place,op_statue)
+        VALUE
+          (#{mrId},#{opType},#{opTime},#{opPlace},#{opStatue})
+
+    </insert>
+
+    <update id="update" parameterType="Operation">
+        UPDATE operation
+        SET mr_id=#{mrId},op_type=#{opType},op_place=#{opPlace},op_statue=#{opStatue}
+        WHERE op_id=#{opId}
+    </update>
+
+
+
+    <delete id="deleteById" parameterType="Operation">
+        DELETE FROM operation
+        WHERE op_id=#{opId}
+    </delete>
+
+    <delete id="deleteByMrId" parameterType="Operation">
+        DELETE FROM operation
+        WHERE mr_id=#{mrId}
+    </delete>
+
+</mapper>

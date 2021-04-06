@@ -1,0 +1,12 @@
+6.28
+已完成任务
+	学习了SpringMVC和Mybatis的链接配置
+	自己配置了SpringMVC、Mybatis和MySQL的链接，并调试通过
+	开始编写entity类、Dao层接口、mapper文件。
+未完成任务
+	无
+
+明天的任务
+	继续学习
+	继续编写编写entity类、Dao层接口、mapper文件。
+	

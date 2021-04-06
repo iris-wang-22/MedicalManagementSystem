@@ -1,0 +1,17 @@
+第2周
+
+已完成任务
+
+     6.26  HTML5+CSS3基础学习，jQuery基础学习，完成了项目页面通用导航栏的修改
+     6.27  学习JSP相关知识，尝试构建静态页面
+     6.28  学习了SpringMVC和Mybatis的链接配置，自己配置了SpringMVC、Mybatis和MySQL的链接，并调试通过，开始编写entity类、Dao层接口、mapper文件。
+     6.29  学习了Service层的的实现方式的和技巧，开始编写负责模块的Entity类、设计了Dao层接口、编写了映射文件
+     6.30  完成了负责模块的Entity类、设计了Dao层接口、映射文件的编写，将数据库配置到远程服务器上
+     7.1  完善前端界面设计，完成了负责模块的Service层实现
+本周未完成任务
+     7.2  学习controller层并实现部分编码，深入学习SpringMVC和MyBatis技术
+     无
+
+下周预计任务
+    
+    完成整个项目的编码测试

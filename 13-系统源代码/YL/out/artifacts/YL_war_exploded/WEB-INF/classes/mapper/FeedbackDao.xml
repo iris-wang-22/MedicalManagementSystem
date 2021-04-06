@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.FeedbackDao">
+    <resultMap id="feedbackResultMap" type="Feedback">
+        <result property="feedbackId" column="feedback_id" />
+        <result property="userId" column="user_id" />
+        <result property="adId" column="ad_id"/>
+        <result property="detail" column="detail"/>
+
+        <association property="user" javaType="User"
+                     resultMap="com.tosit.yl.dao.UserDao.userResultMap"/>
+        <association property="administrative" javaType="Administrative"
+                     resultMap="com.tosit.yl.dao.AdministrativeDao.administrativeResultMap"/>
+    </resultMap>
+
+    <select id="queryFbByUserId" resultType="Feedback" resultMap="feedbackResultMap">
+        SELECT *
+        FROM  (`user` JOIN feedback ON `user`.user_id = feedback.user_Id)
+        JOIN administrative ON administrative.ad_id = feedback.ad_id
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="queryFbByAdId" resultType="Feedback" resultMap="feedbackResultMap">
+        SELECT *
+        FROM  (`user` JOIN feedback ON `user`.user_id = feedback.user_Id)
+        JOIN administrative ON administrative.ad_id = feedback.ad_id
+        WHERE feedback.ad_id =#{adId}
+    </select>
+
+    <select id="queryByFeedbackId" resultType="Feedback" resultMap="feedbackResultMap">
+        SELECT *
+        FROM  (`user` JOIN feedback ON `user`.user_id = feedback.user_Id)
+        JOIN administrative ON administrative.ad_id = feedback.ad_id
+        WHERE feedback.feedback_id =#{feedbackId}
+    </select>
+
+    <select id="queryAll" resultType="Feedback" resultMap="feedbackResultMap">
+        SELECT *
+        FROM  (`user` JOIN feedback ON `user`.user_id = feedback.user_Id)
+        JOIN administrative ON administrative.ad_id = feedback.ad_id
+        ORDER BY feedback.user_id
+        limit #{offset},#{limit}
+    </select>
+
+    <insert id="insert" parameterType="Feedback">
+        INSERT INTO feedback
+        (feedback_id,user_id,ad_id,detail)
+        VALUE
+        (#{feedbackId},#{userId},#{adId},#{detail})
+    </insert>
+
+    <delete id="deleteById" parameterType="int">
+        DELETE FROM feedback
+        WHERE feedback_id = #{feedbackId}
+    </delete>
+
+</mapper>

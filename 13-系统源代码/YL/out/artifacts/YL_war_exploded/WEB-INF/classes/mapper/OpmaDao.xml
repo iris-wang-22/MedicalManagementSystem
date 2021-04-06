@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tosit.yl.dao.OpmaDao">
+    <resultMap id="opmaResultMap" type="Registration">
+        <result property="userId" column="user_id" />
+        <result property="opId" column="op_id" />
+        <association property="user" javaType="User"
+                     resultMap="com.tosit.yl.dao.UserDao.userResultMap"/>
+        <association property="operation" javaType="Operation"
+                     resultMap="com.tosit.yl.dao.OperationDao.operationResultMap"/>
+    </resultMap>
+    <select id="queryByUserId" parameterType="int" resultType="Opma" resultMap="opmaResultMap">
+        SELECT *
+        FROM  (`user` JOIN opma ON `user`.user_id = opma.user_Id)
+        JOIN operation ON operation.op_id = opma.op_id
+        WHERE opma.user_id=#{userId}
+
+    </select>
+
+    <select id="queryByOpId" parameterType="int" resultType="Opma" resultMap="opmaResultMap">
+        SELECT *
+        FROM  (`user` JOIN opma ON `user`.user_id = opma.user_Id)
+        JOIN operation ON operation.op_id = opma.op_id
+        WHERE opma.op_id=#{opId}
+
+    </select>
+    <select id="queryAll" resultType="Opma" resultMap="opmaResultMap">
+        SELECT *
+        FROM  (`user` JOIN opma ON `user`.user_id = opma.user_Id)
+        JOIN operation ON operation.op_id = opma.op_id
+        ORDER BY opma.op_id DESC
+        limit #{offset},#{limit}
+    </select>
+    <insert id="insert" parameterType="Opma">
+        INSERT INTO opma
+        (user_id,op_id)
+        VALUE
+        (#{userId},#{opid})
+
+    </insert>
+
+    <update id="update" parameterType="Opma">
+        UPDATE opma
+        SET user_id=#{userId},op_id=#{opId}
+        WHERE op_id=#{opId}
+    </update>
+
+
+
+    <delete id="deleteById" parameterType="Operation">
+        DELETE FROM operation
+        WHERE op_id=#{opId}
+    </delete>
+
+    <delete id="deleteByMrId" parameterType="Operation">
+        DELETE FROM operation
+        WHERE mr_id=#{mrId}
+    </delete>
+
+</mapper>

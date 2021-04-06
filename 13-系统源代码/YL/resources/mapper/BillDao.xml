@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.BillDao">
+    <resultMap id="billResultMap" type="Bill">
+        <result property="billId" column="bill_id" />
+        <result property="adItemId" column="ad_item_id" />
+        <result property="diId" column="di_id"/>
+        <result property="mrId" column="mr_id" />
+        <result property="billTime" column="bill_time" />
+        <result property="billAs" column="bill_as"/>
+        <result property="billSum" column="bill_sum"/>
+        <association property="drugInstrument" javaType="DrugInstrument"
+                     resultMap="com.tosit.yl.dao.DrugInstrumentDao.drugInstrumentResultMap"/>
+        <association property="medicalRecord" javaType="MedicalRecord"
+                     resultMap="com.tosit.yl.dao.MedicalRecordDao.medicalRecordResultMap"/>
+
+    </resultMap>
+
+    <select id="queryById" resultType="Bill" resultMap="billResultMap">
+        SELECT *
+        FROM (druginstrument JOIN bill ON druginstrument.di_id = bill.di_id)
+
+        JOIN medical_record  ON medical_record.mr_id = bill.mr_id
+        WHERE bill.bill_id=#{billId}
+    </select>
+
+    <select id="queryByMrId" resultType="Bill" resultMap="billResultMap">
+        SELECT *
+        FROM (druginstrument JOIN bill ON druginstrument.di_id = bill.di_id)
+
+        JOIN medical_record  ON medical_record.mr_id = bill.mr_id
+        WHERE bill.mr_id=#{mrId}
+    </select>
+
+    <select id="queryAll" resultType="Bill" resultMap="billResultMap">
+        SELECT *
+        FROM (druginstrument JOIN bill ON druginstrument.di_id = bill.di_id)
+
+        JOIN medical_record  ON medical_record.mr_id = bill.mr_id
+        ORDER BY bill.bill_id
+        limit #{offset},#{limit}
+    </select>
+
+    <insert id="insert" parameterType="Bill">
+        INSERT INTO bill
+        (as_item_id,di_id,mr_id,bill_time,bill_as,bill_sum)
+        VALUE
+        (#{asItemId},#{diId},#{mrId},#{billTime},#{billAs},#{billSum})
+    </insert>
+
+    <update id="update" parameterType="Bill">
+        UPDATE bill
+        set as_item_id=#{asItemId},di_id=#{diId},mr_id=#{mrId},bill_time=#{billTime},bill_as=#{billAs},bill_sum=#{billSum}
+        WHERE bill_id = #{billId}
+    </update>
+
+    <delete id="deleteById" parameterType="Bill">
+        DELETE FROM bill
+        WHERE bill_id=#{billId}
+    </delete>
+
+</mapper>

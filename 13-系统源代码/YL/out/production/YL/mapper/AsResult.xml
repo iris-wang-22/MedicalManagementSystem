@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.AsResultDao">
+    <resultMap id="asItemResultMap" type="Registration">
+        <result property="userId" column="user_id" />
+        <result property="mrId" column="mr_id" />
+        <result property="asItemId" column="as_item_id"/>
+        <result property="asResultTime" column="as_result_time"/>
+        <result property="asResultReport" column="as_result_report"/>
+        <association property="user" javaType="User"
+                     resultMap="com.tosit.yl.dao.UserDao.userResultMap"/>
+        <association property="asItem" javaType="AsItem"
+                     resultMap="com.tosit.yl.dao.AsItemDao.asItemResultMap"/>
+        <association property="medicalRecord" javaType="MedicalRecord"
+                     resultMap="com.tosit.yl.dao.MedicalRecordDao.medicalRecordResultMap"/>
+    </resultMap>
+
+    <select id="queryByMrId" resultMap="asItemResultMap" resultType="AsResult">
+        SELECT *
+        FROM (`user` JOIN as_result ON `user`.user_id = as_result.user_id)
+        JOIN as_item ON as_item.as_item_id = as_result.as_item_id
+        JOIN medical_record  ON medical_record.mr_id = as_result.mr_id
+        WHERE as_result.mr_id = #{mrId};
+    </select>
+    <select id="queryByUserId" resultMap="asItemResultMap" resultType="AsResult">
+        SELECT *
+        FROM (`user` JOIN as_result ON `user`.user_id = as_result.user_id)
+        JOIN as_item ON as_item.as_item_id = as_result.as_item_id
+        JOIN medical_record  ON medical_record.mr_id = as_result.mr_id
+        WHERE as_result.user_id = #{userId};
+    </select>
+    <select id="queryByAsItemId" resultMap="asItemResultMap" resultType="AsResult">
+        SELECT *
+        FROM (`user` JOIN as_result ON `user`.user_id = as_result.user_id)
+        JOIN as_item ON as_item.as_item_id = as_result.as_item_id
+        JOIN medical_record  ON medical_record.mr_id = as_result.mr_id
+        WHERE as_result.as_item_id = #{asItemId};
+    </select>
+    <select id="queryAll" resultType="AsResult" resultMap="asItemResultMap">
+        SELECT *
+        FROM (`user` JOIN as_result ON `user`.user_id = as_result.user_id)
+        JOIN as_item ON as_item.as_item_id = as_result.as_item_id
+        JOIN medical_record  ON medical_record.mr_id = as_result.mr_id
+        ORDER BY as_result.as_item_id
+        LIMIT #{offset},#{limit}
+    </select>
+    <delete id="delete" parameterType="AsResult">
+        DELETE FROM as_result
+        WHERE mr_id = #{mrId} AND as_item_id = #{asItemId}
+    </delete>
+    <update id="update" parameterType="AsResult">
+        UPDATE as_result
+        SET as_result_report = #{asResultReport}
+        WHERE mr_id =#{mrId}
+        AND as_item_id = #{asItemId}
+    </update>
+
+    <insert id="insert" parameterType="AsResult">
+        INSERT INTO as_result
+        (mr_id,as_item_id,user_id,as_result_time,as_result_report)
+        VALUE
+        (#{mrId},#{asItemId},#{userId},#{asResultTime},#{asResultReport})
+    </insert>
+
+</mapper>

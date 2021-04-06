@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.WardDao">
+    <resultMap id="wardResultMap" type="Ward">
+        <result property="bedId" column="bed_id" />
+        <result property="adId" column="ad_id" />
+        <result property="bedLocal" column="bed_local"/>
+        <association property="administrative" javaType="Administrative"
+                     resultMap="com.tosit.yl.dao.AdministrativeDao.administrativeResultMap"/>
+    </resultMap>
+
+    <select id="queryById" resultType="Ward" resultMap="wardResultMap">
+        SELECT *
+        FROM  (administrative JOIN ward ON administrative.ad_id = ward.ad_Id)
+        WHERE ward.bed_id=#{bedId}
+    </select>
+
+
+    <select id="queryAll" resultType="Ward" resultMap="wardResultMap">
+        SELECT *
+        FROM  (administrative JOIN ward ON administrative.ad_id = ward.ad_Id)
+        ORDER BY ward.ad_id
+        limit #{offset},#{limit}
+    </select>
+
+    <insert id="insert" parameterType="Ward">
+        INSERT INTO ward
+        (bed_id,ad_id,bed_local)
+        VALUE
+        (#{bedId},#{adId},#{bedLocal})
+
+    </insert>
+
+    <update id="update" parameterType="Ward">
+        UPDATE ward
+        SET bed_id=#{bedId},ad_id=#{adId},bed_local=#{bedLocal}
+        WHERE bed_id=#{bedId}
+    </update>
+
+
+
+    <delete id="delete" parameterType="Ward">
+        DELETE FROM ward
+        WHERE bed_id=#{bedId}
+    </delete>
+
+</mapper>

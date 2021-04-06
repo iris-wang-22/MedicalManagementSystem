@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.OrderDao">
+    <resultMap id="orderResultMap" type="Order">
+        <result property="diId" column="di_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderDate" column="order_date"/>
+        <result property="orderStatue" column="order_statue"/>
+        <result property="userName" column="user_name"/>
+        <association property="drugInstrument" javaType="DrugInstrument"
+                     resultMap="com.tosit.yl.dao.DrugInstrumentDao.drugInstrumentResultMap"/>
+    </resultMap>
+
+    <select id="queryByDiId" resultType="Order" parameterType="int" resultMap="orderResultMap">
+        SELECT *
+        FROM (`druginstrument` JOIN orde ON `druginstrument`.di_id = orde.di_id)
+        WHERE orde.order_id = #{orderId}
+    </select>
+
+    <select id="queryByOrId" resultType="Order" parameterType="int" resultMap="orderResultMap">
+        SELECT *
+        FROM (`druginstrument` JOIN orde ON `druginstrument`.di_id = orde.di_id)
+        WHERE orde.order_id = #{orderId}
+    </select>
+
+    <select id="queryAll" resultType="Order" resultMap="orderResultMap">
+        SELECT *
+        FROM (`druginstrument` JOIN orde ON `druginstrument`.di_id = orde.di_id)
+        ORDER BY orde.di_id
+        limit #{offset},#{limit}
+    </select>
+
+    <update id="update" parameterType="Order">
+        UPDATE orde
+        SET order_id=#{orderId},di_id=#{diId},order_date=#{orderDate},user_name=#{userName},order_statue=#{orderStatue}
+        WHERE order_id=#{orderId}
+    </update>
+
+    <delete id="deleteByDiId" parameterType="Order">
+        DELETE FROM orde
+        WHERE order_id=#{orderId}
+    </delete>
+
+    <insert id="insert" parameterType="Order">
+        INSERT INTO orde
+        (di_id,order_date,user_name,order_statue)
+        VALUES
+        (#{diId},#{orderDate},#{userName},#{orderStatue})
+    </insert>
+
+    <!--insert id="insert" parameterType="User">
+        INSERT INTO user
+          (user_id,user_name,user_age,user_sex)
+    </insert-->
+</mapper>

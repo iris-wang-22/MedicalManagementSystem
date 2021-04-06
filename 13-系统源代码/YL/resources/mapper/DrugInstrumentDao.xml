@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.DrugInstrumentDao">
+    <resultMap id="drugInstrumentResultMap" type="DrugInstrument">
+        <id property="diId" column="di_id"/>
+        <result property="diName" column="di_name"/>
+        <result property="diType" column="di_type"/>
+        <result property="diAmount" column="di_amount"/>
+        <result property="diExplain" column="di_explain"/>
+        <result property="diSoldPrice" column="di_sold_price"/>
+        <result property="diInPrice" column="di_in_price"/>
+        <result property="diInTime" column="di_in_time"/>
+        <result property="diOutTime" column="di_out_time"/>
+</resultMap>
+
+
+    <select id="queryById" resultType="DrugInstrument" parameterType="int" resultMap="drugInstrumentResultMap">
+        SELECT *
+        FROM druginstrument
+        WHERE di_id = #{diId}
+    </select>
+
+    <select id="queryByName" resultType="DrugInstrument" resultMap="drugInstrumentResultMap">
+        SELECT *
+        FROM druginstrument
+        WHERE di_name = #{diName}
+    </select>
+
+    <select id="queryAll" resultType="DrugInstrument" resultMap="drugInstrumentResultMap">
+        SELECT *
+        FROM druginstrument
+        ORDER BY di_name
+        limit #{offset},#{limit}
+    </select>
+
+    <update id="update" parameterType="DrugInstrument">
+        UPDATE druginstrument
+        SET di_name=#{diName},di_type=#{diType},di_amount=#{diAmount},di_explain=#{diExplain},
+        di_sold_price=#{diSoldPrice},di_in_price=#{diInPrice},di_in_time=#{diInTime},di_out_time=#{diOutTime}
+        WHERE di_id=#{diId}
+    </update>
+
+    <delete id="delete" parameterType="DrugInstrument">
+        DELETE FROM druginstrument
+        WHERE di_id=#{diId}
+    </delete>
+
+    <insert id="insert" parameterType="DrugInstrument">
+        INSERT INTO druginstrument
+          (di_name,di_type,di_amount,di_explain, di_sold_price,di_in_price,di_in_time,di_out_time)
+        VALUES
+          (#{diName},#{diType},#{diAmount},#{diExplain},#{diSoldPrice},#{diInPrice},#{diInTime},#{diOutTime})
+    </insert>
+
+    <!--insert id="insert" parameterType="User">
+        INSERT INTO user
+          (user_id,user_name,user_age,user_sex)
+    </insert-->
+</mapper>

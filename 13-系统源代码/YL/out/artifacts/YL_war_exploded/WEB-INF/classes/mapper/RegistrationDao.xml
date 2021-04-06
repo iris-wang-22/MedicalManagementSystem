@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.RegistrationDao">
+    <resultMap id="registrationResultMap" type="Registration">
+        <result property="userId" column="user_id" />
+        <result property="adId" column="ad_id" />
+        <result property="registrationTime" column="registration_time"/>
+        <result property="registrationStatue" column="registration_statue"/>
+        <association property="user" javaType="User"
+                     resultMap="com.tosit.yl.dao.UserDao.userResultMap"/>
+        <association property="administrative" javaType="Administrative"
+                     resultMap="com.tosit.yl.dao.AdministrativeDao.administrativeResultMap"/>
+    </resultMap>
+
+    <select id="query" resultType="Registration" resultMap="registrationResultMap">
+        SELECT *
+        FROM  (`user` JOIN registration ON `user`.user_id = registration.user_Id)
+        JOIN administrative ON administrative.ad_id = registration.ad_id
+    </select>
+    <select id="queryRgByUserId" resultType="Registration" resultMap="registrationResultMap">
+        SELECT *
+        FROM  (`user` JOIN registration ON `user`.user_id = registration.user_Id)
+        JOIN administrative ON administrative.ad_id = registration.ad_id
+        WHERE registration.user_id = #{userId}
+    </select>
+
+    <select id="queryRgByAdId" resultType="Registration" resultMap="registrationResultMap">
+        SELECT *
+        FROM  (`user` JOIN registration ON `user`.user_id = registration.user_Id)
+        JOIN administrative ON administrative.ad_id = registration.ad_id
+        WHERE registration.ad_id =#{adId}
+    </select>
+
+    <select id="queryAll" resultType="Registration" resultMap="registrationResultMap">
+        SELECT *
+        FROM  (`user` JOIN registration ON `user`.user_id = registration.user_Id)
+        JOIN administrative ON administrative.ad_id = registration.ad_id
+        ORDER BY registration.registration_statue
+        limit #{offset},#{limit}
+
+    </select>
+
+    <insert id="insert" parameterType="Registration">
+        INSERT INTO registration
+        (user_id,ad_id,registration_time,registration_statue)
+        VALUE
+        (#{userId},#{adId},#{registrationTime},#{registrationStatue})
+    </insert>
+
+    <update id="update" parameterType="Registration">
+        UPDATE registration
+        SET user_id=#{userId},ad_id=#{adId},registration_time=#{registrationTime},registration_statue = #{registrationStatue}
+        WHERE user_id = #{userId}
+        AND ad_id = #{adId}
+
+    </update>
+
+    <delete id="deleteRg" parameterType="int">
+        DELETE FROM registration
+        WHERE user_id = #{userId}
+        AND ad_id = #{adId}
+    </delete>
+</mapper>

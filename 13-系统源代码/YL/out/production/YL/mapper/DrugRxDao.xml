@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tosit.yl.dao.DrugRxDao">
+    <resultMap id="drugRxResultMap" type="DrugRx">
+        <result property="diId" column="di_id"/>
+        <result property="opId" column="op_id"/>
+        <result property="mrId" column="mr_id"/>
+        <result property="drugRxTime" column="drug_rx_time"/>
+        <result property="drugRxAmount" column="drug_rx_amount"/>
+        <association property="drugInstrument" javaType="DrugInstrument"
+                     resultMap="com.tosit.yl.dao.DrugInstrumentDao.drugInstrumentResultMap"/>
+        <association property="operation" javaType="Operation"
+                     resultMap="com.tosit.yl.dao.OperationDao.operationResultMap"/>
+        <association property="medicalRecord" javaType="MedicalRecord"
+                     resultMap="com.tosit.yl.dao.MedicalRecordDao.medicalRecordResultMap"/>
+    </resultMap>
+
+    <select id="queryByDiId" resultType="DrugRx" parameterType="int" resultMap="drugRxResultMap">
+        SELECT *
+        FROM ((`druginstrument` JOIN drug_rx ON `druginstrument`.di_id = drug_rx.di_id)
+        JOIN medical_record ON medical_record.mr_id = drug_rx.mr_id)
+        LEFT JOIN operation  ON operation.op_id = drug_rx.op_id
+        ORDER BY drug_rx.di_id
+        WHERE drug_rx.di_id = #{diId}
+    </select>
+    <select id="queryAll" resultType="DrugRx" resultMap="drugRxResultMap">
+        SELECT *
+        FROM ((`druginstrument` JOIN drug_rx ON `druginstrument`.di_id = drug_rx.di_id)
+        JOIN medical_record ON medical_record.mr_id = drug_rx.mr_id)
+        LEFT JOIN operation  ON operation.op_id = drug_rx.op_id
+        ORDER BY drug_rx.di_id
+        limit #{offset},#{limit}
+    </select>
+    <select id="queryByMrId" resultType="DrugRx" parameterType="int" resultMap="drugRxResultMap">
+        SELECT *
+        FROM ((`druginstrument` JOIN drug_rx ON `druginstrument`.di_id = drug_rx.di_id)
+        JOIN medical_record ON medical_record.mr_id = drug_rx.mr_id)
+        LEFT JOIN operation  ON operation.op_id = drug_rx.op_id
+        WHERE drug_rx.mr_id = #{mrId}
+    </select>
+    <select id="queryByOpId" resultType="DrugRx" parameterType="int" resultMap="drugRxResultMap">
+        SELECT *
+        FROM ((`druginstrument` JOIN drug_rx ON `druginstrument`.di_id = drug_rx.di_id)
+        JOIN medical_record ON medical_record.mr_id = drug_rx.mr_id)
+        JOIN operation  ON operation.op_id = drug_rx.op_id
+        WHERE drug_rx.op_id = #{opId}
+    </select>
+    <update id="update" parameterType="DrugRx">
+        UPDATE drug_rx
+        SET mr_id=#{mrId},op_id=#{opId},drug_rx_time=#{drugRxTime} drug_rx_amount=#{drugRxAmount}
+        WHERE di_id=#{diId}
+    </update>
+
+    <delete id="deleteByDiId" parameterType="DrugRx">
+        DELETE FROM drug_rx
+        WHERE di_id=#{diId}
+    </delete>
+
+    <delete id="deleteByOpId" parameterType="DrugRx">
+        DELETE FROM drug_rx
+        WHERE op_id=#{opId}
+    </delete>
+
+    <delete id="deleteByMrId" parameterType="DrugRx">
+        DELETE FROM drug_rx
+        WHERE mr_id=#{mrId}
+    </delete>
+
+    <insert id="insert" parameterType="DrugRx">
+        INSERT INTO drug_rx
+        (di_id,mr_id,op_id,drug_rx_time, drug_rx_amount)
+        VALUES
+        (#{diId},#{mrId},#{opId},#{drugRxTime},#{drugRxAmount})
+    </insert>
+</mapper>
